@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nithin Ai</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.png" type="png">
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Particles.js library -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+  <style>
+    /* Base styling */
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #333;
+      overflow: hidden;
+    }
+
+    /* Particles container */
+    #particles-js {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    #chat-container {
+      width: 90%;
+      max-width: 700px;
+      border: 1px solid #222;
+      border-radius: 5px;
+      background-color: #222;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      position: relative;
+      z-index: 10;
+    }
+
+    #chat-container h2 {
+      color: #ddd;
+      margin: 0;
+      text-align: center;
+      font-size: 24px;
+    }
+
+    #chat-box {
+      height: 300px;
+      overflow-y: auto;
+      background-color: #111;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+
+    #input-container {
+      display: flex;
+      gap: 10px;
+    }
+
+    #user-input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #444;
+      background-color: #333;
+      color: #ddd;
+    }
+
+    #user-input::placeholder {
+      color: #888;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #chat-box p {
+      color: #ddd;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      background-color: #444;
+    }
+
+    #chat-box p:nth-child(odd) {
+      background-color: #333;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Particle Background -->
+  <div id="particles-js"></div>
+
+  <div id="chat-container">
+    <h2>Nithin Ai</h2>
+    <div id="chat-box"></div>
+    <div id="input-container">
+      <input type="text" id="user-input" placeholder="Type a message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const userInput = document.getElementById('user-input').value;
+      document.getElementById('user-input').value = '';
+
+      // Display user message
+      const chatBox = document.getElementById('chat-box');
+      const userMessage = document.createElement('p');
+      userMessage.textContent = "You: " + userInput;
+      chatBox.appendChild(userMessage);
+
+      // Send message to the server
+      const response = await fetch('/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userInput }),
+      });
+      const data = await response.json();
+
+      // Display AI response
+      const aiMessage = document.createElement('p');
+      aiMessage.textContent = "AI: " + data.response;
+      chatBox.appendChild(aiMessage);
+      chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the latest message
+    }
+
+    // Initialize particles.js
+    particlesJS('particles-js', {
+      particles: {
+        number: {
+          value: 100,
+          density: { enable: true, value_area: 800 }
+        },
+        color: { value: "#ffffff" },
+        shape: {
+          type: "circle",
+          stroke: { width: 0, color: "#000000" }
+        },
+        opacity: {
+          value: 0.5,
+          random: false,
+          anim: { enable: false, speed: 1, opacity_min: 0.1, sync: false }
+        },
+        size: {
+          value: 4,
+          random: true,
+          anim: { enable: false, speed: 40, size_min: 0.1, sync: false }
+        },
+        line_linked: {
+          enable: false,
+        },
+        move: {
+          enable: true,
+          speed: 3,
+          direction: "bottom",
+          random: false,
+          straight: false,
+          out_mode: "out",
+          bounce: false,
+          attract: { enable: false, rotateX: 600, rotateY: 1200 }
+        }
+      },
+      interactivity: {
+        detect_on: "canvas",
+        events: {
+          onhover: { enable: true, mode: "repulse" },
+          onclick: { enable: true, mode: "push" },
+          resize: true
+        },
+        modes: {
+          grab: { distance: 400, line_linked: { opacity: 1 } },
+          bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
+          repulse: { distance: 200, duration: 0.4 },
+          push: { particles_nb: 4 },
+          remove: { particles_nb: 2 }
+        }
+      },
+      retina_detect: true
+    });
+  </script>
+</body>
+</html>
